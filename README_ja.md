@@ -2,7 +2,7 @@ Hadoop MapReduce用GridDBコネクタ
 
 ## 概要
 
-Hadoop Mapreduce用GridDBコネクタは、GridDBをHadoop MapReduceタスクの入
+Hadoop MapReduce用GridDBコネクタは、GridDBをHadoop MapReduceタスクの入
 力源、および、出力先として使用するためのJavaライブラリです。本ライブラ
 リによりMapReduceジョブが、インメモリ処理によるGridDBの性能を直接利用で
 きるようになります。

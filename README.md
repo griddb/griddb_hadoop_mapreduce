@@ -13,7 +13,7 @@ Building of the library and execution of the sample programs are checked in the 
     OS:         CentOS6.7(x64)
     Java:       JDK 1.8.0_60
     Maven:      apache-maven-3.3.9
-    Hadoop:     CDH5.X(YARN)
+    Hadoop:     CDH5.7.1(YARN)
 
 ## QuickStart
 ### Preparations
