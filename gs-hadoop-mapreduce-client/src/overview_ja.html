@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</HEAD>
+<body>
+  <div>
+    <p><big><strong>MapReduce用GridDBコネクタ</strong></big></p>
+  </div>
+  <div>
+    <div>
+      <p>MapReduce用GridDBコネクタは、GridDBをMapReduceジョブの入力源、および、出力先として使用するためのJavaライブラリです。本ライブラリはインメモリ処理によるGridDBの性能をMapReduceジョブが直接利用できるようにします。</p>
+      <p>入力源としては複数のコンテナを指定できます。出力先は一つのコンテナに限定されます 。Mapタスク数の最大値は入力源のコンテナが配置されたパーティション数となります。すなわち、Mapタスク数に制限がなければ、入力源となるコンテナが配置されたパーティション毎にMapタスクが起動されます。入力源だけでなく出力先のコンテナも事前に作成しておく必要があります。</p>
+      <p>ここではGridDBを用いたMapReduceジョブを実現するための以下の項目について簡単に説明します。MapReduceプログラミングとGridDBの知識を前提とした内容になっています。</p>
+        <div style="font-size:10px;">
+          <ul>
+            <li><em>MapクラスとReduceクラス</em></li>
+            <li><em>MapReduceジョブの設定</em></li>
+          </ul>
+        </div>
+    </div>
+    <br/>
+    <div>
+      <p><big><u><em>MapクラスとReduceクラス</em></u></big></p>
+    </div>
+    <div>
+      <div style="margin-left:16px">
+        <div><p><u><em>GridDB用Mapクラス</em></u></p></div>
+        <div>
+          <p>GridDB用Mapクラスではmapメソッドの入力のキーがcom.toshiba.mwcloud.gs.hadoop.io.GSColumnKeyWritable、値がcom.toshiba.mwcloud.gs.hadoop.io.GSRowWritableとなるようにプログラムを記述します。</p>
+          <pre>
+            <font size="1">
+              <code>
+    // GridDB用Mapクラスの記述例
+    ...
+    import com.toshiba.mwcloud.gs.io.GSColumnKeyWritable;
+    import com.toshiba.mwcloud.gs.io.GSRowWritable;
+    import com.toshiba.mwcloud.gs.mapreduce.GSMap;
+    ...
+    public static class Map extends
+        GSMap&lt;GSColumnKeyWritable, GSRowWritable, ...&gt; {
+      ...
+      &#64Override
+      public void map(GSColumnKeyWritable key, GSRowWritable value, Context context)
+        throws IOException, InterruptedException {
+        // Mapタスクの処理を記述
+      }
+      ...
+    }
+              </code>
+            </font>
+          </pre>
+        </div>
+      </div>
+      <div style="margin-left:16px">
+        <div><p><u><em>GridDB用Reduceクラス</em></u></p></div>
+        <div>
+          <p>GridDB用Reduceクラスではreduceメソッドの出力のキーがorg.apache.hadoop.io.NullWritable、値がcom.toshiba.mwcloud.gs.hadoop.io.GSRowWritableとなるように記述します。出力先コンテナと出力するGSRowWritableオブジェクトはカラム数や各カラム型が一致していなくてはなりません。</p>
+          <pre>
+            <font size="1">
+              <code>
+    // GridDB用Reduceクラスの記述例
+    ...
+    import org.apache.hadoop.io.NullWritable;
+    import com.toshiba.mwcloud.gs.io.GSRowWritable;
+    import com.toshiba.mwcloud.gs.mapreduce.GSReduce;
+    ...
+    public static class Reduce extends
+        GSReduce&lt;..., NullWritable, GSRowWritable&gt; {
+      ...
+      &#64Override
+      public void reduce(...)
+        throws IOException, InterruptedException {
+        // 出力のキーがNullWritable、値がGSRowWritableとなるようにReduceタスクの処理を記述
+      }
+      ...
+    }
+              </code>
+            </font>
+          </pre>
+          <p>Reduceクラスを省略しMapクラスだけでGridDBに処理結果を書き込む場合は、Mapタスクの出力のキーがNullWritable、値がGSRowWritableとなるようにします。</p>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div>
+      <p><big><u><em>MapReduceジョブの設定</em></u></big></p>
+    </div>
+    <div>
+      <p>GridDBサーバの接続情報と入出力関連の指定をプロパティで設定し、GridDB用InputFormatクラスとOutputFormatクラスを指定します。</p>
+    </div>
+    <div style="margin-left:16px">
+      <div>
+        <p><u><em>GridDB接続情報</em></u></p>
+      </div>
+      <div>
+        <p>org.apache.hadoop.conf.Configuration、あるいは、org.apache.hadoop.mapred.JobConfで以下のGridDBサーバ接続用のプロパティを指定できます。入力源と出力先のGridDBサーバが異なるときには入力処理用と出力処理用のプロパティの両方を設定ください。そうでないときには入出力処理共用プロパティだけを設定すれば接続先のGridDBサーバを指定できます。入力処理、あるいは、出力処理だけのときにも入出力処理共用プロパティを利用できます。</p>
+        <div>
+          <table border="1">
+            <tr>
+              <th>入出力処理共用プロパティ</th>
+              <th>入力処理用プロパティ</th>
+              <th>出力処理用プロパティ</th>
+              <th>説明</th>
+            </tr>
+            <tr>
+              <td>gs.notification.address</td>
+              <td>gs.input.notification.address</td>
+              <td>gs.output.notification.address</td>
+              <td>GridDBマスタの自動検出用IPアドレス(デフォルトは239.0.0.1)</td>
+            </tr>
+            <tr>
+              <td>gs.notification.port</td>
+              <td>gs.input.notification.port</td>
+              <td>gs.output.notification.port</td>
+              <td>GridDBマスタの自動検出用ポート番号(デフォルトは31999)</td>
+            </tr>
+            <tr>
+              <td>gs.cluster.name</td>
+              <td>gs.input.cluster.name</td>
+              <td>gs.output.cluster.name</td>
+              <td>クラスタ名</td>
+            </tr>
+            <tr>
+              <td>gs.user</td>
+              <td>gs.input.user</td>
+              <td>gs.output.user</td>
+              <td>ユーザ名</td>
+            </tr>
+            <tr>
+              <td>gs.password</td>
+              <td>gs.input.password</td>
+              <td>gs.output.password</td>
+              <td>パスワード</td>
+            </tr>
+            <tr>
+              <td>gs.host</td>
+              <td>gs.input.host</td>
+              <td>gs.output.host</td>
+              <td>GridDBマスタのホスト名、あるいは、IPアドレス</td>
+            </tr>
+            <tr>
+              <td>gs.port</td>
+              <td>gs.input.port</td>
+              <td>gs.output.port</td>
+              <td>GridDBマスタのポート番号</td>
+            </tr>
+            <tr>
+              <td>gs.consistency</td>
+              <td>gs.input.consitency</td>
+              <td>gs.output.consistency</td>
+              <td>一貫性レベル</td>
+            </tr>
+            <tr>
+              <td>gs.transaction.timeout</td>
+              <td>gs.input.transaction.timeout</td>
+              <td>gs.output.transaction.timeout</td>
+              <td>トランザクションタイムアウトの最低値(単位は秒)</td>
+            </tr>
+            <tr>
+              <td>gs.failover.timeout</td>
+              <td>gs.input.failover.timeout</td>
+              <td>gs.output.failover.timeout</td>
+              <td>フェイルオーバー待機時間の最低値(単位は秒)</td>
+            </tr>
+            <tr>
+              <td>gs.container.cache.size</td>
+              <td>gs.input.container.cache.size</td>
+              <td>gs.output.container.cache.size</td>
+              <td>コンテナキャッシュの最大コンテナ個数</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <p><u><em>入出力関連の指定</em></u></p>
+      </div>
+      <div>
+        <p>org.apache.hadoop.conf.Configuration、あるいは、org.apache.hadoop.mapred.JobConfで以下の入出力関連のプロパティを指定できます。これらのプロパティはGridDBコネクタ内部の入出力処理を制御するためのものです。</p>
+        <div>
+          <table border="1">
+            <tr>
+              <th></th>
+              <th>プロパティ</th>
+              <th>説明</th>
+            </tr>
+            <tr>
+              <td rowspan="5">入力処理用</td>
+              <td>gs.input.container.name.list</td>
+              <td>入力源となるコンテナ名を','で区切って列挙した一覧</td>
+            </tr>
+            <tr>
+              <td>gs.input.container.name.regex</td>
+              <td>入力源となるコンテナ名の正規表現</td>
+            </tr>
+            <tr>
+              <td>gs.input.tql.where</td>
+              <td>入力データ選別に用いるTQLの条件式</td>
+            </tr>
+            <tr>
+              <td>gs.input.fetch.containers</td>
+              <td>一括入力する最大コンテナ数（デフォルトは1）</td>
+            </tr>
+            <tr>
+              <td>gs.input.fetch.size</td>
+              <td>一括入力する最大ロウ数（デフォルトは0で、全ロウを一括入力）</td>
+            </tr>
+            <tr>
+              <td rowspan="2">出力処理用</td>
+              <td>gs.output.container.name</td>
+              <td>出力先のコンテナ名</td>
+            </tr>
+            <tr>
+              <td>gs.output.row.buffer.size</td>
+              <td>書き込み用バッファのロウ数（デフォルトは1000）</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <p><u><em>GridDB用InputFormatクラスとOutputFormatクラスの指定</em></u></p>
+      </div>
+      <div>
+        <p>InputFormatクラスとOutputFormatクラスとして、以下のクラスを指定します。</p>
+        <div style="font-size:10px;">
+          <ul>
+            <li>
+              <em>org.apache.hadoop.mapred用</em>
+              <table>
+                <tr>
+                  <td>InputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapred.GSRowInputFormat</td>
+                </tr>
+                <tr>
+                  <td>OutputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapred.GSRowOutputFormat</td>
+                </tr>
+              </table>
+            </li>
+            <li>
+              <em>org.apache.hadoop.mapreduce用</em>
+              <table>
+                <tr>
+                  <td>InputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowInputFormat</td>
+                </tr>
+                <tr>
+                  <td>OutputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowOutputFormat</td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <p><u><em>設定例</em></u></p>
+      </div>
+      <div>
+        <p>コンテナinput_1, input_2, input_3のデータを処理して、結果をコンテナoutputに出力する場合の例です。</p>
+        <pre>
+          <font size="1">
+            <code>
+    ...
+    import org.apache.hadoop.conf.Configuration;
+    import org.apache.hadoop.mapreduce.Job;
+    import com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowInputFormat;
+    import com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowOutputFormat;
+    ...
+    Configuration conf = new Configuration();
+    conf.set("gs.notification.address", "239.0.0.1");
+    conf.set("gs.notification.port", "31999");
+    conf.set("gs.cluster.name", "mycluster");
+    conf.set("gs.user", "admin");
+    conf.set("gs.password", "admin");
+    conf.set("gs.input.container.name.list", "input_1, input_2, input_3");
+    conf.set("gs.output.container.name", "output");
+    ...
+    Job job = Job.getInstance(conf, "SampleApp");
+    ...
+    job.setInputFormatClass(GSRowInputFormat.class);
+    job.setOutputFormatClass(GSRowOutputFormat.class);
+    ...
+    job.waitForCompeletion(true);
+    ...
+            </code>
+          </font>
+        </pre>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

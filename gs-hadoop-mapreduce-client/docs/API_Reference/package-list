@@ -1,0 +1,5 @@
+com.toshiba.mwcloud.gs.hadoop.conf
+com.toshiba.mwcloud.gs.hadoop.io
+com.toshiba.mwcloud.gs.hadoop.mapred
+com.toshiba.mwcloud.gs.hadoop.mapreduce
+com.toshiba.mwcloud.gs.hadoop.util

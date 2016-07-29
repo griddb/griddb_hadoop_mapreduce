@@ -40,17 +40,17 @@ Run the following in an environment in which these and hadoop commands can be us
     $ cd gs-hadoop-mapreduce-examples
     $ ./exec-example.sh \
     > --job wordcount \
-    > --define notificationAddress=<GridDB notification address> \
-    > --define notificationPort=<GridDB notification port> \
+    > --define notificationAddress=<GridDB notification address(default is 239.0.0.1)> \
+    > --define notificationPort=<GridDB notification port(default is 31999)> \
     > --define clusterName=<GridDB cluster name> \
     > --define user=<GridDB user> \
     > --define password=<GriDB password> \
-    > pom.xml 2> /dev/null | sort
+    > pom.xml 2> /dev/null | sort -r
 
-    1        </dependencies>
-    1        </parent>
-    1        </project>
-    1        </properties>
+       5        <dependency>
+       5        </dependency>
+       3        <groupId>org.apache.hadoop</groupId>
+       3        <groupId>com.toshiba.mwcloud.gs.hadoop</groupId>
     ...
 
 The first number is the number of occurrences while the right side is a word in the file

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			     http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.toshiba.mwcloud.gs.hadoop</groupId>
+    <artifactId>gs-hadoop-mapreduce</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <groupId>com.toshiba.mwcloud.gs.hadoop</groupId>
+  <artifactId>gs-hadoop-mapreduce-examples</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <description>GridDB Hadoop Examples</description>
+  <name>GridDB Hadoop Examples</name>
+  <properties>
+    <gridstore.jar>${project.basedir}/../lib/gridstore.jar</gridstore.jar>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-mapreduce-client-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.toshiba.mwcloud.gs</groupId>
+      <artifactId>gridstore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.toshiba.mwcloud.gs.hadoop</groupId>
+      <artifactId>gs-hadoop-mapreduce-client</artifactId>
+    </dependency>
+  </dependencies>
+</project>

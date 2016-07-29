@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</HEAD>
+<body>
+  <div>
+    <p><big><strong>MapReduce GridDB connector</strong></big></p>
+  </div>
+  <div>
+    <div>
+      <p>The MapReduce GridDB connector is a Java library for using GridDB as an input source and output destination for MapReduce jobs. This library allows the GridDB performance to be used directly by MapReduce jobs through in-memory processing.</p>
+      <p>Multiple containers can be specified as input source. Output destination is limited to a single container. The maximum number of Map tasks will be the number of partitions placed by the input source container. In other words, if there is no limit in the number of Map tasks, a Map task will be started for each partition placed by the container serving as the input source. Besides the input source, the container of the output destination also needs to be created in advance.</p>
+      <p>A brief description of the items below to realize a MapReduce job using GridDB is given here. The contents assume that the reader has knowledge of both MapReduce programming and GridDB.</p>
+        <div style="font-size:10px;">
+          <ul>
+            <li><em>Map class and Reduce class</em></li>
+            <li><em>MapReduce job settings</em></li>
+          </ul>
+        </div>
+    </div>
+    <br/>
+    <div>
+      <p><big><u><em>Map class and Reduce class</em></u></big></p>
+    </div>
+    <div>
+      <div style="margin-left:16px">
+        <div><p><u><em>GridDB Map class</em></u></p></div>
+        <div>
+          <p>In the GridDB Map class, the input key of the map method is com.toshiba.mwcloud.gs.hadoop.io.GSColumnKeyWritable, while the value is com.toshiba.mwcloud.gs.hadoop.io.GSRowWritable.</p>
+          <pre>
+            <font size="1">
+              <code>
+    // Description example of GridDB Map class
+    ...
+    import com.toshiba.mwcloud.gs.io.GSColumnKeyWritable;
+    import com.toshiba.mwcloud.gs.io.GSRowWritable;
+    import com.toshiba.mwcloud.gs.mapreduce.GSMap;
+    ...
+    public static class Map extends
+        GSMap&lt;GSColumnKeyWritable, GSRowWritable, ...&gt; {
+      ...
+      &#64Override
+      public void map(GSColumnKeyWritable key, GSRowWritable value, Context context)
+        throws IOException, InterruptedException {
+        // Description of the Map task processing
+      }
+      ...
+    }
+              </code>
+            </font>
+          </pre>
+        </div>
+      </div>
+      <div style="margin-left:16px">
+        <div><p><u><em>GridDB Reduce class</em></u></p></div>
+        <div>
+          <p>In the GridDB Reduce class, the output key of the reduce method is org.apache.hadoop.io.NullWritable, while the value is com.toshiba.mwcloud.gs.hadoop.io.GSRowWritable. The number of columns and data type of each column must be the same for the output destination container and the GSRowWritable object to be output.</p>
+          <pre>
+            <font size="1">
+              <code>
+    // Description example of GridDB Reduce class
+    ...
+    import org.apache.hadoop.io.NullWritable;
+    import com.toshiba.mwcloud.gs.io.GSRowWritable;
+    import com.toshiba.mwcloud.gs.mapreduce.GSReduce;
+    ...
+    public static class Reduce extends
+        GSReduce&lt;..., NullWritable, GSRowWritable&gt; {
+      ...
+      &#64Override
+      public void reduce(...)
+        throws IOException, InterruptedException {
+        // Description of the Reduce task processing so that the output key is NullWritable and the value is GSRowWritable
+      }
+      ...
+    }
+              </code>
+            </font>
+          </pre>
+          <p>When omitting the Reduce class and writing the processing results in GridDB with the Map class only, set the output key of the Map task to NullWritable and the value to GSRowWritable.</p>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div>
+      <p><big><u><em>MapReduce job settings</em></u></big></p>
+    </div>
+    <div>
+      <p>Set up the connection information of the GridDB server and the I/O-related specifications in the properties, and specify the GridDB InputFormat class and OutputFormat class.</p>
+    </div>
+    <div style="margin-left:16px">
+      <div>
+        <p><u><em>GridDB connection information</em></u></p>
+      </div>
+      <div>
+        <p>Properties for the GridDB server connection can be specified in org.apache.hadoop.conf.Configuration, or org.apache.hadoop.mapred.JobConf. When the input source differs from the GridDB server of the output destination, set up the properties for both input processing and output processing. Otherwise, the GridDB server of the connection destination can be specified by simply setting up the common properties for input and output processing.</p>
+        <div>
+          <table border="1">
+            <tr>
+              <th>Common property for input and output processing</th>
+              <th>Input processing property</th>
+              <th>Output processing property</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>gs.notification.address</td>
+              <td>gs.input.notification.address</td>
+              <td>gs.output.notification.address</td>
+              <td>Auto detection IP address of GridDB master(default is 239.0.0.1)</td>
+            </tr>
+            <tr>
+              <td>gs.notification.port</td>
+              <td>gs.input.notification.port</td>
+              <td>gs.output.notification.port</td>
+              <td>Auto detection port no. of GridDB master(default is 31999)</td>
+            </tr>
+            <tr>
+              <td>gs.cluster.name</td>
+              <td>gs.input.cluster.name</td>
+              <td>gs.output.cluster.name</td>
+              <td>Cluster name</td>
+            </tr>
+            <tr>
+              <td>gs.user</td>
+              <td>gs.input.user</td>
+              <td>gs.output.user</td>
+              <td>User name</td>
+            </tr>
+            <tr>
+              <td>gs.password</td>
+              <td>gs.input.password</td>
+              <td>gs.output.password</td>
+              <td>Password</td>
+            </tr>
+            <tr>
+              <td>gs.host</td>
+              <td>gs.input.host</td>
+              <td>gs.output.host</td>
+              <td>Host name or IP address of GridDB master</td>
+            </tr>
+            <tr>
+              <td>gs.port</td>
+              <td>gs.input.port</td>
+              <td>gs.output.port</td>
+              <td>Port no. of GridDB master</td>
+            </tr>
+            <tr>
+              <td>gs.consistency</td>
+              <td>gs.input.consitency</td>
+              <td>gs.output.consistency</td>
+              <td>Consistency level</td>
+            </tr>
+            <tr>
+              <td>gs.transaction.timeout</td>
+              <td>gs.input.transaction.timeout</td>
+              <td>gs.output.transaction.timeout</td>
+              <td>Minimum value of transaction timeout (in seconds)</td>
+            </tr>
+            <tr>
+              <td>gs.failover.timeout</td>
+              <td>gs.input.failover.timeout</td>
+              <td>gs.output.failover.timeout</td>
+              <td>Minimum value of failover wait time (in seconds)</td>
+            </tr>
+            <tr>
+              <td>gs.container.cache.size</td>
+              <td>gs.input.container.cache.size</td>
+              <td>gs.output.container.cache.size</td>
+              <td>Maximum number of containers of container cache</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <p><u><em>I/O-related specifications</em></u></p>
+      </div>
+      <div>
+        <p>I/O-related properties can be specified in org.apache.hadoop.conf.Configuration, or org.apache.hadoop.mapred.JobConf. These properties are used to control I/O processing inside the GridDB connector.</p>
+        <div>
+          <table border="1">
+            <tr>
+              <th></th>
+              <th>Property</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td rowspan="5">For input processing</td>
+              <td>gs.input.container.name.list</td>
+              <td>Enumeration list with the container name serving as the input source demarcated by ','</td>
+            </tr>
+            <tr>
+              <td>gs.input.container.name.regex</td>
+              <td>Regular expression of the container name serving as the input source</td>
+            </tr>
+            <tr>
+              <td>gs.input.tql.where</td>
+              <td>Conditional expressions of TQL used in input data selection</td>
+            </tr>
+            <tr>
+              <td>gs.input.fetch.containers</td>
+              <td>Maximum number of containers to be read at a time (default is 1)</td>
+            </tr>
+            <tr>
+              <td>gs.input.fetch.size</td>
+              <td>Maximum number of rows to be read at a time (default is 0, and all rows are read at a time)</td>
+            </tr>
+            <tr>
+              <td rowspan="2">For output processing</td>
+              <td>gs.output.container.name</td>
+              <td>Container name of output destination</td>
+            </tr>
+            <tr>
+              <td>gs.output.row.buffer.size</td>
+              <td>Number of rows in buffer for writing (default is 1000)</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <p><u><em>GridDB InputFormat class and OutputFormat class specification</em></u></p>
+      </div>
+      <div>
+        <p>The following classes are specified as the InputFormat class and OutputFormat class.</p>
+        <div style="font-size:10px;">
+          <ul>
+            <li>
+              <em>For org.apache.hadoop.mapred</em>
+              <table>
+                <tr>
+                  <td>InputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapred.GSRowInputFormat</td>
+                </tr>
+                <tr>
+                  <td>OutputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapred.GSRowOutputFormat</td>
+                </tr>
+              </table>
+            </li>
+            <li>
+              <em>For org.apache.hadoop.mapreduce</em>
+              <table>
+                <tr>
+                  <td>InputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowInputFormat</td>
+                </tr>
+                <tr>
+                  <td>OutputFormat: </td>
+                  <td>com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowOutputFormat</td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <p><u><em>Configuration example</em></u></p>
+      </div>
+      <div>
+        <p>Example when processing the data of container "input_1", "input_2", "input_3", and the outputting the results to the container "output".</p>
+        <pre>
+          <font size="1">
+            <code>
+    ...
+    import org.apache.hadoop.conf.Configuration;
+    import org.apache.hadoop.mapreduce.Job;
+    import com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowInputFormat;
+    import com.toshiba.mwcloud.gs.hadoop.mapreduce.GSRowOutputFormat;
+    ...
+    Configuration conf = new Configuration();
+    conf.set("gs.notification.address", "239.0.0.1");
+    conf.set("gs.notification.port", "31999");
+    conf.set("gs.cluster.name", "mycluster");
+    conf.set("gs.user", "admin");
+    conf.set("gs.password", "admin");
+    conf.set("gs.input.container.name.list", "input_1, input_2, input_3");
+    conf.set("gs.output.container.name", "output");
+    ...
+    Job job = Job.getInstance(conf, "SampleApp");
+    ...
+    job.setInputFormatClass(GSRowInputFormat.class);
+    job.setOutputFormatClass(GSRowOutputFormat.class);
+    ...
+    job.waitForCompeletion(true);
+    ...
+            </code>
+          </font>
+        </pre>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
