@@ -1,8 +1,8 @@
-GridDB connector for Hadoop MapReduce
+GridDB connector for Apache Hadoop MapReduce
 
 ## Overview
 
-The Hadoop MapReduce GridDB connector is a Java library for using GridDB as an input source and output destination for Hadoop MapReduce jobs.
+The GridDB connector for [Apache Hadoop](http://hadoop.apache.org/) MapReduce is a Java library for using GridDB as an input source and output destination for Hadoop MapReduce jobs.
  This library allows the GridDB performance to be used directly by MapReduce jobs through in-memory processing.
 
 
@@ -69,3 +69,8 @@ gs-hadoop-mapreduce-examples/README.md for details about the sample programs.
 ## License
   
 The Hadoop MapReduce GridDB connector source license is Apache License, version 2.0.
+
+## Trademarks
+
+  Apache Hadoop and Hadoop are either registered trademarks or trademarks of the Apache Software Foundation in the United States and/or other countries.
+

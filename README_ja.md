@@ -1,11 +1,9 @@
-Hadoop MapReduce用GridDBコネクタ
+Apache Hadoop MapReduce用GridDBコネクタ
 
 ## 概要
 
-Hadoop MapReduce用GridDBコネクタは、GridDBをHadoop MapReduceタスクの入
-力源、および、出力先として使用するためのJavaライブラリです。本ライブラ
-リによりMapReduceジョブが、インメモリ処理によるGridDBの性能を直接利用で
-きるようになります。
+[Apache Hadoop](http://hadoop.apache.org/) MapReduce用GridDBコネクタは、GridDBをHadoop MapReduceタスクの入力源、および、出力先として使用するためのJavaライブラリです。
+本ライブラリによりMapReduceジョブが、インメモリ処理によるGridDBの性能を直接利用できるようになります。
 
 ## 動作環境
 
@@ -69,3 +67,7 @@ gs-hadoop-mapreduce-examples/README_ja.mdを参照ください。
 ## ライセンス
 
 Hadoop MapReduce用GridDBコネクタのライセンスはApache License, version 2.0です。
+
+## 商標
+
+Apache Hadoop、Hadoopは、Apache Software Foundationの米国およびその他の国における登録商標または商標です。
