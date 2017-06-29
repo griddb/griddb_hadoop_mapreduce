@@ -107,7 +107,7 @@ public enum GDProperty {
                 return false;
             }
             try {
-                return Short.valueOf(value) >= 0;
+                return Integer.valueOf(value) >= 0;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -134,7 +134,7 @@ public enum GDProperty {
                 return false;
             }
             try {
-                return Short.valueOf(value) >= 0;
+                return Integer.valueOf(value) >= 0;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -161,7 +161,7 @@ public enum GDProperty {
                 return false;
             }
             try {
-                return Short.valueOf(value) >= 0;
+                return Integer.valueOf(value) >= 0;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -250,7 +250,7 @@ public enum GDProperty {
                 return false;
             }
             try {
-                return Short.valueOf(value) >= 0;
+                return Integer.valueOf(value) >= 0;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -277,7 +277,7 @@ public enum GDProperty {
                 return false;
             }
             try {
-                return Short.valueOf(value) >= 0;
+                return Integer.valueOf(value) >= 0;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -304,7 +304,7 @@ public enum GDProperty {
                 return false;
             }
             try {
-                return Short.valueOf(value) >= 0;
+                return Integer.valueOf(value) >= 0;
             } catch (NumberFormatException e) {
                 return false;
             }
