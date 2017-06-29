@@ -42,7 +42,8 @@ public class GDPropertyUtils {
     private static final GDProperty[] gsPropertiesToRead = {
         GS_INPUT_HOST, GS_INPUT_PORT, GS_INPUT_NOTIFICATION_ADDRESS, GS_INPUT_NOTIFICATION_PORT,
         GS_INPUT_CLUSTER_NAME, GS_INPUT_USER, GS_INPUT_PASSWORD, GS_INPUT_CONSISTENCY,
-        GS_INPUT_TRANSACTION_TIMEOUT, GS_INPUT_FAILOVER_TIMEOUT, GS_INPUT_CONTAINER_CACHE_SIZE
+        GS_INPUT_TRANSACTION_TIMEOUT, GS_INPUT_FAILOVER_TIMEOUT, GS_INPUT_CONTAINER_CACHE_SIZE,
+        GS_INPUT_NOTIFICATION_MEMBER, GS_INPUT_NOTIFICATION_PROVIDER
     };
 
     /**
@@ -55,7 +56,8 @@ public class GDPropertyUtils {
     private static final GDProperty[] gsPropertiesToWrite = {
         GS_OUTPUT_HOST, GS_OUTPUT_PORT, GS_OUTPUT_NOTIFICATION_ADDRESS, GS_OUTPUT_NOTIFICATION_PORT,
         GS_OUTPUT_CLUSTER_NAME, GS_OUTPUT_USER, GS_OUTPUT_PASSWORD, GS_OUTPUT_CONSISTENCY,
-        GS_OUTPUT_TRANSACTION_TIMEOUT, GS_OUTPUT_FAILOVER_TIMEOUT, GS_OUTPUT_CONTAINER_CACHE_SIZE
+        GS_OUTPUT_TRANSACTION_TIMEOUT, GS_OUTPUT_FAILOVER_TIMEOUT, GS_OUTPUT_CONTAINER_CACHE_SIZE,
+        GS_OUTPUT_NOTIFICATION_MEMBER, GS_OUTPUT_NOTIFICATION_PROVIDER
     };
 
     private GDPropertyUtils() {
@@ -142,6 +144,19 @@ public class GDPropertyUtils {
                 if (value.trim().length() > 0) {
                     prop.put(key, value);
                 }
+            }
+        }
+
+        if (prop.containsKey(GS_INPUT_NOTIFICATION_PROVIDER.getGSPropertyKey())) {
+            if (prop.containsKey(GS_INPUT_NOTIFICATION_MEMBER.getGSPropertyKey())) {
+                prop.remove(GS_INPUT_NOTIFICATION_MEMBER.getGSPropertyKey());
+            }
+            if (prop.containsKey(GS_INPUT_NOTIFICATION_ADDRESS.getGSPropertyKey())) {
+                prop.remove(GS_INPUT_NOTIFICATION_ADDRESS.getGSPropertyKey());
+            }
+        } else if (prop.containsKey(GS_INPUT_NOTIFICATION_MEMBER.getGSPropertyKey())) {
+            if (prop.containsKey(GS_INPUT_NOTIFICATION_ADDRESS.getGSPropertyKey())) {
+                prop.remove(GS_INPUT_NOTIFICATION_ADDRESS.getGSPropertyKey());
             }
         }
 

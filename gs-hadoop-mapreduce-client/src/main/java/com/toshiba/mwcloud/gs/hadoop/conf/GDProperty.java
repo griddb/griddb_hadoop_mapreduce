@@ -859,6 +859,116 @@ public enum GDProperty {
 
     /**
      * <div lang="ja">
+     * プロパティgs.notification.memberに対応した定数です。
+     * </div><div lang="en">
+     * Constant corresponding to the property "gs.notification.member".
+     * </div>
+     */
+    GS_NOTIFICATION_MEMBER("gs.notification.member", "", null, null) {
+        @Override
+        public boolean validate(String value) {
+            return true;
+        }
+
+        @Override
+        public String normalize(String value) {
+            return value.trim();
+        }
+    },
+    /**
+     * <div lang="ja">
+     * プロパティgs.input.notification.memberに対応した定数です。
+     * </div><div lang="en">
+     * Constant corresponding to the property "gs.input.notification.member".
+     * </div>
+     */
+    GS_INPUT_NOTIFICATION_MEMBER("gs.input.notification.member", "", "notificationMember", GS_NOTIFICATION_MEMBER) {
+        @Override
+        public boolean validate(String value) {
+            return true;
+        }
+
+        @Override
+        public String normalize(String value) {
+            return value.trim();
+        }
+    },
+    /**
+     * <div lang="ja">
+     * プロパティgs.output.notification.memberに対応した定数です。
+     * </div><div lang="en">
+     * Constant corresponding to the property "gs.output.notification.member".
+     * </div>
+     */
+    GS_OUTPUT_NOTIFICATION_MEMBER("gs.output.notification.member", "", "notificationMember", GS_NOTIFICATION_MEMBER) {
+        @Override
+        public boolean validate(String value) {
+            return true;
+        }
+
+        @Override
+        public String normalize(String value) {
+            return value.trim();
+        }
+    },
+
+    /**
+     * <div lang="ja">
+     * プロパティgs.notification.providerに対応した定数です。
+     * </div><div lang="en">
+     * Constant corresponding to the property "gs.notification.provider".
+     * </div>
+     */
+    GS_NOTIFICATION_PROVIDER("gs.notification.provider", "", null, null) {
+        @Override
+        public boolean validate(String value) {
+            return true;
+        }
+
+        @Override
+        public String normalize(String value) {
+            return value.trim();
+        }
+    },
+    /**
+     * <div lang="ja">
+     * プロパティgs.input.notification.providerに対応した定数です。
+     * </div><div lang="en">
+     * Constant corresponding to the property "gs.input.notification.provider".
+     * </div>
+     */
+    GS_INPUT_NOTIFICATION_PROVIDER("gs.input.notification.provider", "", "notificationProvider", GS_NOTIFICATION_PROVIDER) {
+        @Override
+        public boolean validate(String value) {
+            return true;
+        }
+
+        @Override
+        public String normalize(String value) {
+            return value.trim();
+        }
+    },
+    /**
+     * <div lang="ja">
+     * プロパティgs.output.notification.providerに対応した定数です。
+     * </div><div lang="en">
+     * Constant corresponding to the property "gs.output.notification.provider".
+     * </div>
+     */
+    GS_OUTPUT_NOTIFICATION_PROVIDER("gs.output.notification.provider", "", "notificationProvider", GS_NOTIFICATION_PROVIDER) {
+        @Override
+        public boolean validate(String value) {
+            return true;
+        }
+
+        @Override
+        public String normalize(String value) {
+            return value.trim();
+        }
+    },
+
+    /**
+     * <div lang="ja">
      * プロパティgs.output.container.nameに対応した定数です。<br/>
      * 出力先のコンテナ名を指定するための定数です。
      * </div><div lang="en">
